@@ -1,10 +1,16 @@
 const fetchOptionsData = async (symbol) => {
-    const apiKey = "YOUR_API_KEY"; // Replace with your API key
+    const apiKey = "UZFB4jqfuaDsDFKfwN4PCokemAXBwqLM"; // Your Polygon.io API key
 
     try {
-        const response = await fetch(`https://api.example.com/options/${symbol}?apikey=${apiKey}`);
+        // Fetch options snapshot data for the symbol
+        const response = await fetch(`https://api.polygon.io/v3/snapshot/options/${symbol}?apiKey=${apiKey}`);
         const data = await response.json();
-        processOptionsData(data, symbol);
+        
+        if (data.results) {
+            processOptionsData(data.results, symbol);
+        } else {
+            console.log(`No options data found for ${symbol}`);
+        }
     } catch (error) {
         console.error(`Error fetching data for ${symbol}:`, error);
     }
@@ -13,7 +19,7 @@ const fetchOptionsData = async (symbol) => {
 const processOptionsData = (data, symbol) => {
     const alertsDiv = document.getElementById("alerts");
     
-    // Clear previous alerts for this symbol
+    // Add a header for the symbol if data is available
     const symbolHeader = document.createElement("h2");
     symbolHeader.textContent = `Alerts for ${symbol}`;
     alertsDiv.appendChild(symbolHeader);
@@ -28,8 +34,8 @@ const processOptionsData = (data, symbol) => {
 };
 
 const isHighProbability = (option) => {
-    // Define high-probability criteria (e.g., delta, volume, etc.)
-    return option.probability > 0.7; // Example criteria
+    // Define high-probability criteria, for example, delta > 0.5 and high open interest
+    return option.greeks.delta > 0.5 && option.open_interest > 100; // Adjust criteria as needed
 };
 
 // Fetch data for both SPY and QQQ at intervals
