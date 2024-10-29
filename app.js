@@ -19,28 +19,13 @@ const fetchOptionsData = async (symbol) => {
 const processOptionsData = (data, symbol) => {
     const alertsDiv = document.getElementById("alerts");
     
-    // Add a header for the symbol if data is available
+    // Temporary sample data for testing layout
+    const sampleOption = { target: '450', stop: '440' };
     const symbolHeader = document.createElement("h2");
     symbolHeader.textContent = `Alerts for ${symbol}`;
     alertsDiv.appendChild(symbolHeader);
 
-    data.forEach(option => {
-        if (isHighProbability(option)) {
-            const alert = document.createElement("div");
-            alert.textContent = `${symbol} - Target: ${option.target} | Stop Loss: ${option.stop}`;
-            alertsDiv.appendChild(alert);
-        }
-    });
+    const alert = document.createElement("div");
+    alert.textContent = `${symbol} - Target: ${sampleOption.target} | Stop Loss: ${sampleOption.stop}`;
+    alertsDiv.appendChild(alert);
 };
-
-const isHighProbability = (option) => {
-    // Define high-probability criteria, for example, delta > 0.5 and high open interest
-    return option.greeks.delta > 0.5 && option.open_interest > 100; // Adjust criteria as needed
-};
-
-// Fetch data for both SPY and QQQ at intervals
-setInterval(() => {
-    document.getElementById("alerts").innerHTML = ""; // Clear previous alerts
-    fetchOptionsData("SPY");
-    fetchOptionsData("QQQ");
-}, 60000); // Refresh every minute
